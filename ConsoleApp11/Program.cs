@@ -24,6 +24,7 @@ internal class Program
         string bekeretkod = Console.ReadLine().ToUpper();
         Console.WriteLine(esemenyKezelo.ErkezesEsTavzoasKozottIdo(bekeretkod));
 
-
+        List<string> asd = esemenyKezelo.KikVoltakIskolaban(8,50,17,10);
+        asd.ForEach(x=> Console.WriteLine(x));
     }
 }

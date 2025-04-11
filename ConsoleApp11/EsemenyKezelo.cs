@@ -16,6 +16,29 @@ namespace ConsoleApp11
         //List<String> KikVoltakIskolaban(int kezdoOra, int kezdoPerc, int zaroOra, int zaroPerc)
         //- A megadott intervallumban iskolában tartózkódok listája
 
+        public List<String> EbedelokKodjai()
+        {
+            return esemenyLista.Where(x=>x.EsemenyKod==3).Select(x=>x.TanuloKod).ToList();
+        }
+
+        public List<Esemeny> GetEsemenyek(int esemenyFajta) 
+        {
+            return esemenyLista.Where(x => x.EsemenyKod == esemenyFajta).ToList();
+        }
+
+        public List<String> KikVoltakIskolaban(int kezdoOra, int kezdoPerc, int zaroOra, int zaroPerc)
+        {
+            var elsoerkezesek = esemenyLista.Where(x => x.EsemenyKod == 1).GroupBy(x => x.TanuloKod).Select(x=>x.First());    
+            var utolsotavozasok = esemenyLista.Where(x => x.EsemenyKod == 2).GroupBy(x => x.TanuloKod).Select(x => x.Last());
+
+            var erkezeskodok =elsoerkezesek.Where(x => x.EsemenyIdopont <= new TimeOnly(kezdoOra, kezdoPerc)).Select(x=>x.TanuloKod);
+            var tavozaskodok = utolsotavozasok.Where(x => x.EsemenyIdopont >= new TimeOnly(zaroOra, zaroPerc)).Select(x => x.TanuloKod);
+
+            var ittvoltak = erkezeskodok.Intersect(tavozaskodok);
+
+            return ittvoltak.ToList();
+        }
+
         public void LoadFromData(String path)
         {
             esemenyLista = File.ReadLines(path).Select(x => new Esemeny(x)).ToList();
